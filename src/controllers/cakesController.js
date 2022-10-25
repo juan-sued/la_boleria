@@ -1,15 +1,15 @@
-import connection from '../databases/postgres.js';
+import connection from '../databases/postgresSQL.js';
 
 async function registerCake(request, response) {
-  const { name, price, image, description } = request.body.newCake;
+  const { name, price, image, description } = request.body;
 
   try {
     await connection.query(
-      `INSERT INTO games (name, image, price, description) VALUES
+      `INSERT INTO cakes (name, image, price, description) VALUES
       ('${name}',
       '${image}',
       ${price},
-      ${description})`
+      '${description}')`
     );
 
     return response.sendStatus(201);
