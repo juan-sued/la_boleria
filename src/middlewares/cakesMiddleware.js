@@ -1,6 +1,6 @@
 import cakeSchema from '../schemas/cakeSchema.js';
-import connection from '../databases/postgresSQL.js';
-
+import * as controllerHelper from '../controllers/controllerHelper.js';
+import * as cakesRepository from '../repositories/cakesRepository.js';
 async function validateNewCake(request, response, next) {
   const newCake = request.body;
 
@@ -10,20 +10,18 @@ async function validateNewCake(request, response, next) {
     const details = error.details;
 
     if (details[0].path[0] === 'image') {
-      return response.sendStatus(420);
+      return controllerHelper.validateSchemaResponse(response);
     }
 
-    return response.sendStatus(400);
+    return controllerHelper.badRequestResponse(response);
   }
 
   try {
-    const QUERY_BASIC = 'SELECT * FROM ';
-    console.log(1);
-    const { rows: cakes } = await connection.query(QUERY_BASIC + 'cakes;');
+    const { rows: cakes } = await cakesRepository.getAllCakes();
 
     const isCakeRegistered = cakes.some(cake => cake.name === newCake.name);
 
-    if (isCakeRegistered) return response.sendStatus(409);
+    if (isCakeRegistered) return controllerHelper.conflictResponse(response);
 
     next();
   } catch {
