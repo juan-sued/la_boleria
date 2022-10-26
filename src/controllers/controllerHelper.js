@@ -4,14 +4,16 @@ const STATUS_CODE = Object.freeze({
   BAD_REQUEST: 400,
   SERVER_ERROR: 500,
   UNPROCESSABLE_ENTITY: 422,
-  CONFLICT: 409
+  CONFLICT: 409,
+  NOT_FOUND: 404
 });
 const STATUS_TEXT = Object.freeze({
   CREATED: 'created',
   BAD_REQUEST: 'bad request',
   OK: 'Ok',
   CONFLICT: 'conflict',
-  UNPROCESSABLE_ENTITY: 'unprocessable entity'
+  UNPROCESSABLE_ENTITY: 'unprocessable entity',
+  NOT_FOUND: 'Not Found'
 });
 
 function badRequestResponse(response, text = STATUS_TEXT.BAD_REQUEST) {
@@ -34,8 +36,11 @@ function conflictResponse(response, text = STATUS_TEXT.CONFLICT) {
   return response.status(STATUS_CODE.CONFLICT).send(text);
 }
 
-function validateSchemaResponse(response, text = STATUS_TEXT.UNPROCESSABLE_ENTITY) {
+function unprocessableEntityResponse(response, text = STATUS_TEXT.UNPROCESSABLE_ENTITY) {
   return response.status(STATUS_CODE.UNPROCESSABLE_ENTITY).send(text);
+}
+function notFoundResponse(response, text = STATUS_TEXT.NOT_FOUND) {
+  return response.status(STATUS_CODE.NOT_FOUND).send(text);
 }
 
 export {
@@ -43,6 +48,7 @@ export {
   createdResponse,
   okResponse,
   serverErrorResponse,
-  validateSchemaResponse,
-  conflictResponse
+  unprocessableEntityResponse,
+  conflictResponse,
+  notFoundResponse
 };

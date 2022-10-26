@@ -10,7 +10,7 @@ async function validateNewCake(request, response, next) {
     const details = error.details;
 
     if (details[0].path[0] === 'image') {
-      return controllerHelper.validateSchemaResponse(response);
+      return controllerHelper.unprocessableEntityResponse(response);
     }
 
     return controllerHelper.badRequestResponse(response);

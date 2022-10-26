@@ -13,4 +13,8 @@ async function insertClients({ name, address, phone }) {
   );
 }
 
-export { getAllClients, insertClients };
+async function getClientById(clientId) {
+  return connection.query('SELECT * FROM clients WHERE id = $1;', [clientId]);
+}
+
+export { getAllClients, insertClients, getClientById };
