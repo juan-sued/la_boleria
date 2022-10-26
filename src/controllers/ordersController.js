@@ -27,7 +27,7 @@ export async function getOrders(request, response) {
 
   const QUERY_BASIC = `SELECT orders.*, orders.id AS "orderId", clients.*,  clients.name AS "clientName", cakes.*, cakes.name AS "cakeName" FROM orders JOIN clients ON clients."id" = orders."clientId" JOIN cakes ON cakes."id" = orders."cakeId"`;
   const ordersJoin = [];
-  console.log(!!date);
+
   try {
     if (!!date) {
       const { rows: orders } = await connection.query(
@@ -65,7 +65,6 @@ export async function getOrders(request, response) {
         QUERY_BASIC + ` WHERE orders.id = $1;`,
         [id]
       );
-      console.log('aqui idasda', orders);
 
       if (orders.length === 0) return response.status(404).send(ordersJoin);
 
@@ -98,7 +97,6 @@ export async function getOrders(request, response) {
     else {
       const { rows: allOrders } = await connection.query(QUERY_BASIC + ';');
       if (allOrders.length === 0) response.status(404).send(ordersJoin);
-      console.log('aqui', allOrders);
 
       for (let order of allOrders) {
         ordersJoin.push({
