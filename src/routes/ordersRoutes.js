@@ -7,4 +7,5 @@ const router = Router();
 
 router.post('/orders', validateNewOrder, registerOrder);
 router.get('/orders', getOrders);
+router.get('/orders/:id', getOrders);
 export default router;

@@ -23,10 +23,11 @@ export async function registerOrder(request, response) {
 
 export async function getOrders(request, response) {
   const { date } = request.query;
+  const { id } = request.params;
 
-  const QUERY_BASIC = `SELECT orders.*, clients.*,  clients.name AS "clientName", cakes.*, cakes.name AS "cakeName" FROM orders JOIN clients ON clients."id" = orders."clientId" JOIN cakes ON cakes."id" = orders."cakeId"`;
+  const QUERY_BASIC = `SELECT orders.*, orders.id AS "orderId", clients.*,  clients.name AS "clientName", cakes.*, cakes.name AS "cakeName" FROM orders JOIN clients ON clients."id" = orders."clientId" JOIN cakes ON cakes."id" = orders."cakeId"`;
   const ordersJoin = [];
-  console.log(!!date);
+
   try {
     if (!!date) {
       const { rows: orders } = await connection.query(
@@ -59,13 +60,43 @@ export async function getOrders(request, response) {
       }
 
       return response.status(200).send(ordersJoin);
+    } else if (!!id) {
+      const { rows: orders } = await connection.query(
+        QUERY_BASIC + ` WHERE orders.id = $1;`,
+        [id]
+      );
+
+      if (orders.length === 0) return response.status(404).send(ordersJoin);
+
+      for (let order of orders) {
+        ordersJoin.push({
+          client: {
+            id: order.clientId,
+            name: order.clientName,
+            address: order.address,
+            phone: order.phone
+          },
+          cake: {
+            id: order.cakeId,
+            name: order.cakeName,
+            price: order.price,
+            description: order.description,
+            image: order.image
+          },
+          orderId: order.id,
+          createdAt: order.createdAt,
+          quantity: order.quantity,
+          totalPrice: order.totalPrice
+        });
+      }
+
+      return response.status(200).send(ordersJoin);
     }
 
     //====================================================================
     else {
       const { rows: allOrders } = await connection.query(QUERY_BASIC + ';');
       if (allOrders.length === 0) response.status(404).send(ordersJoin);
-      console.log('aqui', allOrders);
 
       for (let order of allOrders) {
         ordersJoin.push({
