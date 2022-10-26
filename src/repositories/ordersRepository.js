@@ -6,5 +6,9 @@ async function insertOrder({ clientId, cakeId, quantity, totalPrice, createdAt }
     [clientId, cakeId, quantity, totalPrice, createdAt]
   );
 }
-
-export { insertOrder };
+async function getOrders() {
+  return connection.query(
+    `SELECT id AS "orderId", "clientId" as client, "cakeId" as cake,"createdAt", quantity, "totalPrice", "isDelivered" FROM orders`
+  );
+}
+export { insertOrder, getOrders };
