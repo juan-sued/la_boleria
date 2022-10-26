@@ -1,0 +1,4 @@
+{
+  "thunder-client.requestLayout": "Top/Bottom",
+  "thunder-client.httpLibrary": "got"
+}
